@@ -1,57 +1,105 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container" style="text-align: center;">
         <img class="img-center" src="/assets/img/burger.png" alt="Burger">
-        <h1 class="display-4">Devour Burger</h1>
+        <h1 class="display-4">DEVOUR BURGER</h1>
     </div>
 </div>
 <div class="container">
-    <div class="row" style="text-align: center;">
+    <div class="row">
         <div class="col">
-            <strong>UNDEVOURED</strong>
+            <h3 style="text-align: center;">UNDEVOURED</h3>
             <hr />
             <ul>
                 {{#each burgers}}
-                    {{#unless devoured}}
-                        <li style="list-style-type:none">
-                            {{burger_name}}
-                            <button class="burger-button" data-id="{{id}}">Devour</button>
-                        </li>
-                    {{/unless}}
+                {{#unless devoured}}
+                <li style="list-style-type:none;">
+                    {{burger_name}}
+                    <button class="burger-button btn btn-primary" data-id="{{id}}">Devour</button>
+                </li>
+                <br>
+                {{/unless}}
                 {{/each}}
             </ul>
         </div>
         <div class="col">
-            <strong>DEVOURED</strong>
+            <h3 style="text-align: center;">DEVOURED</h3>
             <hr />
             <ul>
                 {{#each burgers}}
-                    {{#if devoured}}
-                        <li style="list-style-type:none">
-                            {{burger_name}}
-                        </li>
-                    {{/if}}
+                {{#if devoured}}
+                <li style="list-style-type:none;">
+                    {{burger_name}}
+                </li>
+                <br>
+                {{/if}}
                 {{/each}}
             </ul>
         </div>
     </div>
+
+    <hr />
+
+    <div class="row">
+        <form style="margin: 0 auto; text-align: center;">
+            <div class="form-group">
+                <label for="addBurger">Add a Burger</label>
+                <input type="text" class="form-control" id="addBurger" name="name" placeholder="Burger Name">
+            </div>
+            <button type="submit" class="add-burger btn btn-primary">Add</button>
+        </form>
+    </div>
 </div>
 
-<script>
+<hr>
 
-    $(".burger-button").on("click", function(event) {
-        console.log("Got your clicks dawg.  Don't even trip.");
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand">Eat-Da-Burger</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav nav-right">
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/thomasdylan" target="_blank"><i
+                        class="fab fa-github fa-lg"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.linkedin.com/in/dylan-thomas-39153b188/" target="_blank"><i
+                        class="fab fa-linkedin fa-lg"></i></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    $(".burger-button").on("click", function (event) {
         var id = $(this).data("id");
         var eaten = $(this).data("devoured");
         var newEatenState = {
-            devoured: true
+            "devoured": true
         };
 
-        $.ajax("/api/burgers" + id, {
+        $.ajax("/api/burgers/" + id, {
             type: "PUT",
             data: newEatenState
-        }).then(function() {
-            console.log("Changed state to", eaten);
+        }).then(function () {
+            location.reload();
         });
     });
 
+    $(".add-burger").on("submit", function(event) {
+        event.preventDefault();
+        var newBurger = {
+            "burger_name": $("#addBurger").val().trim()
+        };
+        $.ajax("/api/burgers", {
+            type: "POST",
+            data: newBurger
+        }).then(
+            function() {
+                location.reload();
+            }
+        );
+    });
 </script>
