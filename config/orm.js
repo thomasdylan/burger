@@ -37,7 +37,9 @@ var orm = {
         queryString += "VALUES (" + printQuestionMarks(vals.length) + ") ";
 
         connection.query(queryString, vals, function(err, result) {
-            if (err) throw err;
+            if(err) {
+                return err;
+            } 
             cb(result);
         });
     },
